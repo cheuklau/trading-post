@@ -1,0 +1,101 @@
+/*
+ *
+ * Body, html
+ * 
+ */
+
+body, html {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: Roboto;
+    min-width: 475px;
+}
+
+/*
+ *
+ * Header
+ *
+ */
+
+.header {
+    height: 15%;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.header__title{
+    height: 50%;
+    margin-right: 0.5em;
+    font-weight: normal;
+    font-size: 300%;
+    line-height: 150%;
+}
+
+/*
+ *
+ * Rulers
+ *
+ */
+
+hr
+{
+    background-color: black;
+    margin-left: 1.0em;
+    margin-right: 1.5em;
+    border: none;
+    color: black;
+    height: 2px;
+}
+
+
+/*
+ *
+ * Columns
+ *
+ */
+
+.column {
+      float: left;
+      padding: 10px;
+}
+
+.left__column {
+    width: 25%;
+}
+
+.right__column {
+    width: 75%;
+}
+
+/*
+ *
+ * Form
+ *
+ */
+
+label, input {
+    display: block;
+}
+
+label {
+    margin-bottom: 20px;
+}
+
+/*
+ *
+ * Flash messaging
+ *
+ */
+
+.flash {
+    width:100%;
+    text-decoration: none;
+}
+
+.flash li {
+    list-style-type: none;
+    text-align: center;
+}

@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+  {% include "privateheader.html" %}
+
+  <div class="row">
+
+    <div class="column left__column">
+
+      <h2> Categories </h2>
+
+      {% for category in categories %}
+
+        <a href = "{{url_for('showItems', category_id=category.id)}}">
+
+          <h3> {{category.name}} </h3>
+
+        </a>
+
+      {% endfor %}
+
+    </div>
+
+    <div class="column right__column">
+
+      <h2> {{item.name}} </h2>
+
+      <h3> {{item.description}} </h3>
+
+      <a href = "{{url_for('editItem', item_id = item.id)}}">
+
+        <h3> Edit </h3>
+
+      </a>
+
+      <a href = "{{url_for('deleteItem', item_id = item.id)}}">
+
+        <h3> Delete </h3>
+        
+      </a>
+
+    </div>
+
+  </div>
+
+{% endblock %}

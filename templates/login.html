@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"> </script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <!-- Client id should be injected as a secret -->
+    <meta name="google-signin-client_id" content="1027310311467-s096e7s3nhrfeiblcunkd18sdjjkd9dj.apps.googleusercontent.com">
+  </head>
+  <body>
+    <div id="my-signin2"></div>
+    <script>
+      // How to handle successful logins
+      function onSuccess(googleUser) {
+        console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        // Hide sign-in button now that user is signed in
+        $('#my-signin2').attr('style', 'display: none');
+        // Send one-time-use code to the server via ajax
+        $.ajax({
+          type: 'POST',
+          url: '/gconnect?state={{STATE}}',
+          processData: false,
+          data: googleUser.getAuthResponse(includeAuthorizationData=true).access_token,
+          contentType: 'application/octet-stream; charset=utf-8',
+          success: function(result) {
+            // Perform redirect to homepage when ajax call succeeds
+            $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+            setTimeout(function() {
+              window.location.href = "/";
+            }, 4000);
+          }
+        });
+      }
+      // How to handle failed logins
+      function onFailure(error) {
+          console.log(error);
+      }
+      // Render the button
+      function renderButton() {
+          gapi.signin2.render('my-signin2', {
+              'scope': 'profile email',
+              'width': 240,
+              'height': 50,
+              'longtitle': true,
+              'theme': 'dark',
+              'onsuccess': onSuccess,
+              'onfailure': onFailure
+          });
+      }
+    </script>
+  </body>
+</html>
