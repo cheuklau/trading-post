@@ -1,39 +1,25 @@
 <header class="header">
 
-  <a href = "{{url_for('showMain')}}">
+  <a align="center" href="{{url_for('showMain')}}">
+    <h1 class="header_title">Trading Post</h1>
+  </a>
 
-    <h1 class="header__title">Catalog App</h1>
-
+  <a align="right" href = "{{url_for('gdisconnect')}}">
+    <h5>Logout</h5>
   </a>
 
 </header>
 
-<a href = "{{url_for('gdisconnect')}}">
-
-  <h3>Click Here to Log Out</h3>
-
-</a>
-
-<hr>
+<hr width="100%">
 
 <div class='flash'>
-
 	{% with messages = get_flashed_messages() %}
-
-    	{% if messages %}  
-
+    	{% if messages %}
         <ul>
-
         	{% for message in messages %}
-
             <li> <strong> {{ message }} </strong> </li>
-            
         	{% endfor %}
-
         </ul>
-
      	{% endif %}
-
     {% endwith %}
-
 </div>

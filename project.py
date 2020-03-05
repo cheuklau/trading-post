@@ -137,24 +137,6 @@ def itemsJSON():
     return jsonify(items=[i.serialize for i in items])
 
 
-@app.route('/')
-def showMain():
-    """ Main page showing the latest items.
-
-    """
-
-    categories = session.query(Category).order_by(asc(Category.name))
-    items = session.query(Item).order_by(desc(Item.time_added)).limit(5)
-    if 'username' not in login_session:
-        return render_template('publicmain.html',
-                               categories=categories,
-                               items=items)
-    else:
-        return render_template('privatemain.html',
-                               categories=categories,
-                               items=items)
-
-
 @app.route('/category/<int:category_id>/')
 @app.route('/category/<int:category_id>/items/')
 def showItems(category_id):
@@ -275,6 +257,24 @@ def deleteItem(item_id):
         else:
             flash('User not authorized to delete item')
             return redirect(url_for('showMain'))
+
+
+@app.route('/')
+def showMain():
+    """ Main page showing the latest items.
+
+    """
+
+    categories = session.query(Category).order_by(asc(Category.name))
+    items = session.query(Item).order_by(desc(Item.time_added)).limit(5)
+    if 'username' not in login_session:
+        return render_template('publicmain.html',
+                               categories=categories,
+                               items=items)
+    else:
+        return render_template('privatemain.html',
+                               categories=categories,
+                               items=items)
 
 
 def createUser(login_session):
