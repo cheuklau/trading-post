@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import datetime
 
 # Import empty database we created in database_setup.py
-from database_setup import Base, User, Category, Item
+from database_setup import Base, User, Location, Item, Message
 
 # Let our program know which database engine we want to communicate with
 engine = create_engine('sqlite:///catalog.db')
@@ -20,58 +20,57 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Add users to database
-User1 = User(name="Person A", email="person_a@udacity.com")
-session.add(User1)
-session.commit()
+session.add(User(name="John Smith", email="john_smith@email.com", location_id=1))
+session.add(User(name="Jane Doe", email="jane_doe@email.com", location_id=1))
+session.add(User(name="Jack Daniels", email="jack_daniels@email.com", location_id=2))
 
-User2 = User(name="Person B", email="person_b@udacity.com")
-session.add(User2)
-session.commit()
-
-User3 = User(name="Person C", email="person_c@udacity.com")
-session.add(User3)
-session.commit()
-
-User4 = User(name="Person D", email="person_d@udacity.com")
-session.add(User4)
-session.commit()
-
-User5 = User(name="Person E", email="person_e@udacity.com")
-session.add(User5)
-session.commit()
-
-# Add locations
-Category1 = Category(name="GP Vegas")
-session.add(Category1)
-session.commit()
-
-Category2 = Category(name="GP San Jose")
-session.add(Category2)
-session.commit()
+# Add locations to database
+session.add(Location(name="GP Vegas"))
+session.add(Location(name="GP San Jose"))
 
 # Add items to database
-Item11 = Item(name="Glistener Elf",
-              description="NM/M",
-              time_added=datetime.datetime.utcnow(),
-              category_id=1,
-              user_id=1)
-session.add(Item11)
+session.add(Item(
+    user_id=1,
+    name="Black Lotus",
+    cardset="Alpha",
+    condition="Near Mint",
+    price="100.00",
+    quantity="1",
+    time_added=datetime.datetime.utcnow()))
+session.add(Item(
+    user_id=1,
+    name="Aether Vial",
+    cardset="Kaladesh",
+    condition="Lightly Played",
+    price="50.00",
+    quantity="1",
+    time_added=datetime.datetime.utcnow()))
+session.add(Item(
+    user_id=2,
+    name="Liliana of the Veil",
+    cardset="Modern Masters",
+    condition="Heavily Played",
+    price="10.25",
+    quantity="1",
+    time_added=datetime.datetime.utcnow()))
+session.add(Item(
+    user_id=3,
+    name="Mox Opal",
+    cardset="Scars of Mirrodin",
+    condition="Damaged",
+    price="1.00",
+    quantity="1",
+    time_added=datetime.datetime.utcnow()))
+
+# Add messages
+session.add(Message(
+    sender_id=1,
+    receiver_id=2,
+    item_id=2,
+    message="I want that Mox Ruby!"
+))
+
+# Commit session
 session.commit()
 
-Item12 = Item(name="Blighted Agent",
-              description="MP",
-              time_added=datetime.datetime.utcnow(),
-              category_id=1,
-              user_id=2)
-session.add(Item12)
-session.commit()
-
-Item24 = Item(name="Might of Old Krosa",
-              description="PL",
-              time_added=datetime.datetime.utcnow(),
-              category_id=2,
-              user_id=4)
-session.add(Item24)
-session.commit()
-
-print "Added user, categories and items!"
+print "Added user, locations, items and messages!"

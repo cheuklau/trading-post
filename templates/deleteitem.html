@@ -1,27 +1,30 @@
 {% extends "main.html" %}
-
 {% block content %}
+{% include "privateheader.html" %}
+  <div class="row">
+    <div class="column left__column">
+      <div class="dropdown">
+        <button class="dropbtn">Location</button>
+        <div class="dropdown-content">
+        {% for location in locations %}
+          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+        {% endfor %}
+        </div>
+      </div>
+      <br><br><br>
+      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+      <br><br><br>
+      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
+    </div>
 
-  {% include "privateheader.html" %}
-
-  <h2> Are you sure you want to delete {{item.name}}? </h2>
-
-  <form action="#" method = 'post'>
-
-    <button type="submit" class="btn-default" id="submit" type="submit">
-	  <span class="glyphicon" aria-hidden="true"></span>
-	  Delete
-	</button>
-
-  </form>
-
-  <br>
-	
-  <a href = '{{url_for('showMain')}}'>
-    <button class="btn-default">
-	  <span class="glyphicon" aria-hidden="true"></span>
-	  Cancel
-	</button>
-  </a>
-
+    <div class="column right__column">
+      <h2 class="item">Are you sure you want to delete {{item.name}}?</h2>
+      <form action="#" method="post">
+        <div class="form-group">
+          <button type="submit" class="btn-default" id="submit">
+          <span class="glyphicon" aria-hidden="true"></span>Delete</button>
+        </div>
+      </form>
+    </div>
+  </div>
 {% endblock %}

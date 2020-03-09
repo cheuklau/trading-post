@@ -1,4 +1,4 @@
-*.db
+*.db*
 client_secrets.json
 *.pyc
 .DS_STORE

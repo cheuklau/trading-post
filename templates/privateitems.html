@@ -1,50 +1,29 @@
 {% extends "main.html" %}
-
 {% block content %}
-
   {% include "privateheader.html" %}
-
   <div class="row">
-
-    <!-- Category column -->
     <div class="column left__column">
-
-      <h2> Categories </h2>
-
-      {% for category in categories %}
-
-        <a href = "{{url_for('showItems', category_id=category.id)}}">
-
-          <h3> {{category.name}} </h3>
-
-        </a>
-
-      {% endfor %}
-
+      <div class="dropdown">
+        <button class="dropbtn">Location</button>
+        <div class="dropdown-content">
+        {% for location in locations %}
+          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+        {% endfor %}
+        </div>
+      </div>
+      <br><br><br>
+      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+      <br><br><br>
+      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
     </div>
 
     <div class="column right__column">
-
-      <h2> {{category.name}} items ({{items|length}} total)</h2>
-
-      <a href = "{{url_for('addItem')}}">
-
-        <h3> Add Item </h3>
-
-      </a>
-      
+      <h2 align="center">{{location.name}} items ({{items|length}} total)</h2>
       {% for item in items %}
-
         <a href = "{{url_for('showItem', item_id=item.id)}}">
-
-          <h3> {{item.name}} </h3>
-
+          <h3 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}} - UID {{item.user_id}}</h3>
         </a>
-        
       {% endfor %}
-
     </div>
-
   </div>
-
 {% endblock %}

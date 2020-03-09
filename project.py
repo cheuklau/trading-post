@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 # Import SQLAlchemy dependencies
 from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, User, Category, Item
+from database_setup import Base, User, Location, Item, Message
 
 # Imports for anti-forgery state token
 from flask import session as login_session
@@ -46,11 +46,9 @@ def gconnect():
         response = make_response(json.dumps('Invalid state parameter.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-
     # Store access token in session for later use
     access_token =  request.data
     login_session['access_token'] = access_token
-
     # Get user info
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': access_token, 'alt': 'json'}
@@ -58,13 +56,11 @@ def gconnect():
     data = answer.json()
     login_session['username'] = data['name']
     login_session['email'] = data['email']
-
     # See if user exists, if not then make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-
     # Create personalized response
     output = ''
     output += '<h1>Welcome, '
@@ -91,11 +87,11 @@ def gdisconnect():
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     output = ''
+    # Delete login session
+    del login_session['access_token']
+    del login_session['username']
+    del login_session['email']
     if result['status'] == '200':
-        # Delete login session
-        del login_session['access_token']
-        del login_session['username']
-        del login_session['email']
         output += '<h1> Successfully disconnected </h1>'
     else:
         output += '<h1> Unable to disconnect user </h1>'
@@ -107,23 +103,23 @@ def gdisconnect():
     return output
 
 
-@app.route('/category/JSON')
-def categoryJSON():
-    """ API endpoint to return all category names.
+@app.route('/location/JSON')
+def locationJSON():
+    """ API endpoint to return all location names.
 
     """
 
-    categories = session.query(Category).all()
-    return jsonify(categories=[c.serialize for c in categories])
+    locations = session.query(location).all()
+    return jsonify(locations=[c.serialize for c in locations])
 
 
-@app.route('/category/<int:category_id>/JSON')
-def categoryItemsJSON(category_id):
-    """ API endpoint to return all items of a given category.
+@app.route('/location/<int:location_id>/JSON')
+def locationItemsJSON(location_id):
+    """ API endpoint to return all items of a given location.
 
     """
 
-    items = session.query(Item).filter_by(category_id=category_id).all()
+    items = session.query(Item).filter_by(location_id=location_id).all()
     return jsonify(items=[i.serialize for i in items])
 
 
@@ -137,26 +133,32 @@ def itemsJSON():
     return jsonify(items=[i.serialize for i in items])
 
 
-@app.route('/category/<int:category_id>/')
-@app.route('/category/<int:category_id>/items/')
-def showItems(category_id):
-    """ Show items for selected category
+@app.route('/location/<int:location_id>/')
+@app.route('/location/<int:location_id>/items/')
+def showItems(location_id):
+    """ Show items for selected location
 
 
     """
 
-    categories = session.query(Category).order_by(asc(Category.name))
-    category = session.query(Category).filter_by(id=category_id).one()
-    items = session.query(Item).filter_by(category_id=category_id).all()
+    locations = session.query(Location).order_by(asc(Location.name))
+    location = session.query(Location).filter_by(id=location_id).one()
+    items = session.query(Item).join(User).filter(User.location_id==location_id).all()
     if 'username' not in login_session:
         return render_template('publicitems.html',
-                               categories=categories,
-                               category=category,
+                               locations=locations,
+                               location=location,
                                items=items)
     else:
+        # Update location of user
+        user = session.query(User).filter_by(id=login_session['user_id']).one()
+        user.location_id = location_id
+        location = session.query(Location).filter_by(id=location_id).one()
+        #flash('Your location has been set to %s' % location.name)
         return render_template('privateitems.html',
-                               categories=categories,
-                               category=category,
+                               user_id=login_session['user_id'],
+                               locations=locations,
+                               location=location,
                                items=items)
 
 
@@ -167,16 +169,41 @@ def showItem(item_id):
 
     """
 
-    categories = session.query(Category).order_by(asc(Category.name))
+    locations = session.query(Location).order_by(asc(Location.name))
     item = session.query(Item).filter_by(id=item_id).one()
-    if 'username' not in login_session:
-        return render_template('publicitem.html',
-                               categories=categories,
-                               item=item)
-    else:
-        return render_template('privateitem.html',
-                               categories=categories,
-                               item=item)
+    return render_template('privateitem.html',
+                            user_id=login_session['user_id'],
+                            locations=locations,
+                            item=item)
+
+
+@app.route('/user/items/')
+def showUserItems():
+    """ Show items for user
+
+
+    """
+
+    locations = session.query(Location).order_by(asc(Location.name))
+    items = session.query(Item).filter_by(user_id=login_session['user_id']).all()
+    return render_template('useritems.html',
+                            locations=locations,
+                            items=items)
+
+
+@app.route('/user/items/<int:item_id>')
+def showUserItem(item_id):
+    """ Show description for individual item belonging to user
+
+
+    """
+
+    locations = session.query(Location).order_by(asc(Location.name))
+    item = session.query(Item).filter_by(id=item_id).one()
+    return render_template('useritem.html',
+                            user_id=login_session['user_id'],
+                            locations=locations,
+                            item=item)
 
 
 @app.route('/additem', methods=['GET', 'POST'])
@@ -189,16 +216,18 @@ def addItem():
     if 'username' not in login_session:
         return redirect('/login')
 
-    # If this is a post request from newitem.html
+    print "here"
     if request.method == 'POST':
         newItem = Item(name=request.form['name'],
-                       description=request.form['description'],
-                       category_id=request.form['category_id'],
+                       cardset=request.form['cardset'],
+                       condition=request.form['condition'],
+                       price=request.form['price'],
+                       quantity=request.form['quantity'],
                        user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
         flash('Item successfully added')
-        return redirect(url_for('showMain'))
+        return redirect(url_for('showUserItems'))
     else:
         return render_template('newitem.html')
 
@@ -210,28 +239,23 @@ def editItem(item_id):
     """
 
     editedItem = session.query(Item).filter_by(id=item_id).one()
-    user = session.query(User).filter_by(email=login_session['email']).one()
-    if request.method == 'POST':
+    user = session.query(User).filter_by(id=login_session['user_id']).one()
+    if request.method == "POST":
         if user.id == editedItem.user_id:
-            if request.form['name']:
-                editedItem.name = request.form['name']
-            if request.form['description']:
-                editedItem.description = request.form['description']
-            if request.form['category_id']:
-                editedItem.category_id = request.form['category_id']
+            editedItem.name = request.form["name"]
+            editedItem.cardset = request.form["cardset"]
+            editedItem.condition = request.form["condition"]
+            editedItem.quantity = request.form["quantity"]
+            editedItem.price = request.form["price"]
             session.add(editedItem)
             session.commit()
-            flash('Item successfully edited')
-            return redirect(url_for('showMain'))
+            flash("Item successfully edited")
+            return redirect(url_for("showUserItems"))
         else:
-            flash('User not authorized to edit item')
-            return redirect(url_for('showMain'))
+            flash("User not authorized to edit item")
+            return redirect(url_for("showUserItems"))
     else:
-        if user.id == editedItem.user_id:
-            return render_template('edititem.html', item=editedItem)
-        else:
-            flash('User not authorized to edit item')
-            return redirect(url_for('showMain'))
+        return render_template("edititem.html", item=editedItem)
 
 
 @app.route('/items/<int:item_id>/delete', methods=['GET', 'POST'])
@@ -241,22 +265,18 @@ def deleteItem(item_id):
     """
 
     deletedItem = session.query(Item).filter_by(id=item_id).one()
-    user = session.query(User).filter_by(email=login_session['email']).one()
+    user = session.query(User).filter_by(id=login_session['user_id']).one()
     if request.method == 'POST':
         if user.id == deletedItem.user_id:
             session.delete(deletedItem)
             session.commit()
             flash('Item successfully deleted')
-            return redirect(url_for('showMain'))
+            return redirect(url_for('showUserItems'))
         else:
             flash('User not authorized to delete item')
-            return redirect(url_for('showMain'))
+            return redirect(url_for('showUserItems'))
     else:
-        if user.id == deletedItem.user_id:
-            return render_template('deleteitem.html', item=deletedItem)
-        else:
-            flash('User not authorized to delete item')
-            return redirect(url_for('showMain'))
+        return render_template('deleteitem.html', item=deletedItem)
 
 
 @app.route('/')
@@ -265,15 +285,15 @@ def showMain():
 
     """
 
-    categories = session.query(Category).order_by(asc(Category.name))
+    locations = session.query(Location).order_by(asc(Location.name))
     items = session.query(Item).order_by(desc(Item.time_added)).limit(5)
     if 'username' not in login_session:
         return render_template('publicmain.html',
-                               categories=categories,
+                               locations=locations,
                                items=items)
     else:
         return render_template('privatemain.html',
-                               categories=categories,
+                               locations=locations,
                                items=items)
 
 

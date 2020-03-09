@@ -18,10 +18,15 @@
     </div>
 
     <div class="column right__column">
-      <h2 align="center">Latest News</h2>
-      <p class="item">
-        This is a placeholder for Magic and site-related news.
-      </p>
+      <h2 align="center">Binder ({{items|length}} total)</h2>
+      {% for item in items %}
+        <h3 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}}
+        <a href="{{url_for('editItem', item_id=item.id)}}">Edit</a>
+        <a href="{{url_for('deleteItem', item_id=item.id)}}">Delete</a>
+        </h3>
+      {% endfor %}
+      <br>
+      <a align="right" href="{{url_for('addItem')}}"><button class="dropbtn-4">Add Item</button></a>
     </div>
   </div>
 {% endblock %}

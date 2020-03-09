@@ -6,21 +6,18 @@
       <div class="dropdown">
         <button class="dropbtn">Location</button>
         <div class="dropdown-content">
-        {% for category in categories %}
-          <a href = "{{url_for('showItems', category_id=category.id)}}">{{category.name}}</a>
+        {% for location in locations %}
+          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
         {% endfor %}
         </div>
       </div>
     </div>
 
     <div class="column right__column">
-      <h2 align="center">Latest Items</h2>
-      {% for item in items %}
-        <a href = "{{url_for('showItem', item_id=item.id)}}">
-          <h3 class="item"> {{item.name}} ({{item.category.name}}) </h3>
-        </a>
-      {% endfor %}
+      <h2 align="center">Latest News</h2>
+      <p class="item">
+        This is a placeholder for Magic and site-related news.
+      </p>
     </div>
   </div>
-
 {% endblock %}

@@ -8,13 +8,13 @@
 
     <div class="column left__column">
 
-      <h2> Categories </h2>
+      <h2> Locations </h2>
 
-      {% for category in categories %}
+      {% for location in locations %}
 
-        <a href = "{{url_for('showItems', category_id=category.id)}}">
+        <a href = "{{url_for('showItems', location_id=location.id)}}">
 
-          <h3> {{category.name}} </h3>
+          <h3> {{location.name}} </h3>
 
         </a>
 
@@ -25,7 +25,7 @@
     <div class="column right__column">
 
       <h2> {{item.name}} </h2>
-      
+
       <h3> {{item.description}} </h3>
 
     </div>

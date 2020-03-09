@@ -8,6 +8,12 @@ body {
     min-width: 900px;
 }
 
+.form-control {
+    font-family: "Roboto", sans-serif;
+    color: black;
+    font-size: 120%;
+}
+
 .header {
     color: black;
     text-transform: capitalize;
@@ -43,6 +49,7 @@ hr
 }
 
 .item {
+    font-family: "Roboto", sans-serif;
     color: black;
     font-size: 120%;
 }
@@ -65,13 +72,51 @@ label {
     text-align: center;
 }
 
+.btn-default{
+    background-color: rgb(13, 14, 13);
+    color: white;
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    width: 100px;
+}
+
 .dropbtn {
     background-color: #4CAF50;
     color: white;
     padding: 16px;
     font-size: 16px;
     border: none;
-  }
+    width: 150px;
+}
+
+.dropbtn-2 {
+    background-color: rgb(175, 76, 76);
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    width: 150px;
+}
+
+.dropbtn-3 {
+    background-color: rgb(9, 26, 182);
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+    width: 150px;
+}
+
+.dropbtn-4 {
+    background-color: rgb(3, 3, 3);
+    color: white;
+    padding: 7px;
+    font-size: 16px;
+    border: none;
+    width: 120px;
+    float: right;
+}
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
@@ -81,20 +126,20 @@ label {
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
-display: none;
-position: absolute;
-background-color: #f1f1f1;
-min-width: 160px;
-box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-z-index: 1;
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
 }
 
 /* Links inside the dropdown */
 .dropdown-content a {
-color: black;
-padding: 12px 16px;
-text-decoration: none;
-display: block;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
 }
 
 /* Change color of dropdown links on hover */
