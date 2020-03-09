@@ -1,29 +1,29 @@
 {% extends "main.html" %}
 {% block content %}
-  {% include "privateheader.html" %}
-  <div class="row">
-    <div class="column left__column">
-      <div class="dropdown">
-        <button class="dropbtn">Location</button>
-        <div class="dropdown-content">
-        {% for location in locations %}
-          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
-        {% endfor %}
-        </div>
+{% include "privateheader.html" %}
+<div class="row">
+  <div class="column left__column">
+    <div class="dropdown">
+      <button class="dropbtn">Location</button>
+      <div class="dropdown-content">
+      {% for location in locations %}
+        <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+      {% endfor %}
       </div>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
     </div>
-
-    <div class="column right__column">
-      <h2 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}} - UID {{item.user_id}}</h2>
-      <br>
-      <a align="right" href="{{url_for('editItem')}}"><button class="dropbtn-4">Edit Item</button></a>
-      <br>
-      <br>
-      <a align="right" href="{{url_for('deleteItem')}}"><button class="dropbtn-4">Delete Item</button></a>
-    </div>
+    <br><br><br>
+    <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+    <br><br><br>
+    <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
   </div>
+
+  <div class="column right__column">
+    <h2 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}} - UID {{item.user_id}}</h2>
+    <br>
+    <a align="right" href="{{url_for('editItem')}}"><button class="dropbtn-4">Edit Item</button></a>
+    <br>
+    <br>
+    <a align="right" href="{{url_for('deleteItem')}}"><button class="dropbtn-4">Delete Item</button></a>
+  </div>
+</div>
 {% endblock %}

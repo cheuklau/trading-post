@@ -1,23 +1,23 @@
 {% extends "main.html" %}
 {% block content %}
-  {% include "publicheader.html" %}
-  <div class="row">
-    <div class="column left__column">
-      <div class="dropdown">
-        <button class="dropbtn">Location</button>
-        <div class="dropdown-content">
-        {% for location in locations %}
-          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
-        {% endfor %}
-        </div>
+{% include "publicheader.html" %}
+<div class="row">
+  <div class="column left__column">
+    <div class="dropdown">
+      <button class="dropbtn">Location</button>
+      <div class="dropdown-content">
+      {% for location in locations %}
+        <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+      {% endfor %}
       </div>
     </div>
-
-    <div class="column right__column">
-      <h2 align="center">{{location.name}} Items ({{items|length}} total)</h2>
-      {% for item in items %}
-        <h3 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}}</h3>
-      {% endfor %}
-    </div>
   </div>
+
+  <div class="column right__column">
+    <h2 align="center">{{location.name}} Items ({{items|length}} total)</h2>
+    {% for item in items %}
+      <h3 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}}</h3>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}

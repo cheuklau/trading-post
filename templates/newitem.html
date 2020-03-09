@@ -1,57 +1,58 @@
 {% extends "main.html" %}
 {% block content %}
-  {% include "privateheader.html" %}
-  <div class="row">
-    <div class="column left__column">
-      <div class="dropdown">
-        <button class="dropbtn">Location</button>
-        <div class="dropdown-content">
-        {% for location in locations %}
-          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
-        {% endfor %}
-        </div>
-      </div>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
+{% include "privateheader.html" %}
+<div class="row">
+	<div class="column left__column">
+		<div class="dropdown">
+			<button class="dropbtn">Location</button>
+			<div class="dropdown-content">
+			{% for location in locations %}
+			<a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+			{% endfor %}
+			</div>
+		</div>
+		<br><br><br>
+		<a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+		<br><br><br>
+		<a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
 	</div>
 
 	<div class="column right__column">
 		<form action="#" method="post">
 			<div class="form-group">
-			  <label class="item" for="name">Card Name</label>
-			  <input type="text" placeholder="Black Lotus" class="form-control" maxlength="50" name="name">
-			  <br>
-			  <label class="item" for="cardset">Set</label>
-			  <input type="text" placeholder="Alpha" class="form-control" maxlength="50" name="cardset">
-			  <br>
-			  <label class="item" for="condition">Condition</label>
-			  <select class="item" name="condition">
+				<label class="item" for="name">Card Name</label>
+				<input type="text" placeholder="Black Lotus" class="form-control" maxlength="50" name="name">
+				<br>
+				<label class="item" for="cardset">Set</label>
+				<input type="text" placeholder="Alpha" class="form-control" maxlength="50" name="cardset">
+				<br>
+				<label class="item" for="condition">Condition</label>
+				<select class="item" name="condition">
 				<option value="Near Mint">Near Mint</option>
 				<option value="Lightly Played">Lightly Played</option>
 				<option value="Moderately Played">Moderately Played</option>
 				<option value="Heavily Played">Heavily Played</option>
 				<option value="Damaged">Damaged</option>
-			  </select>
-			  <br>
-			  <br>
-			  <label class="item" for="quantity">Quantity (up to a playset)</label>
-			  <select class="item" name="quantity">
+				</select>
+				<br>
+				<br>
+				<label class="item" for="quantity">Quantity (up to a playset)</label>
+				<select class="item" name="quantity">
 				<option value="1">1</option>
 				<option value="2">2</option>
 				<option value="3">3</option>
 				<option value="4">4</option>
-			  </select>
-			  <br>
-			  <br>
-			  <label class="item" for="price">Price</label>
-			  <input type="text" placeholder="10.00" class="form-control" maxlength="50" name="price">
-			  <br>
-			  <br>
-			  <button type="submit" class="btn-default" id="submit">
-			  <span class="glyphicon" aria-hidden="true"></span>Add Item</button>
+				</select>
+				<br>
+				<br>
+				<label class="item" for="price">Price</label>
+				<input type="text" placeholder="10.00" class="form-control" maxlength="50" name="price">
+				<br>
+				<br>
+				<button type="submit" class="btn-default" id="submit">
+				<span class="glyphicon" aria-hidden="true"></span>Add Item</button>
 			</div>
 		</form>
 	</div>
+</div>
 {% endblock %}

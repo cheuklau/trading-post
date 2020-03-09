@@ -238,6 +238,7 @@ def editItem(item_id):
 
     """
 
+    locations = session.query(Location).order_by(asc(Location.name))
     editedItem = session.query(Item).filter_by(id=item_id).one()
     user = session.query(User).filter_by(id=login_session['user_id']).one()
     if request.method == "POST":
@@ -255,7 +256,9 @@ def editItem(item_id):
             flash("User not authorized to edit item")
             return redirect(url_for("showUserItems"))
     else:
-        return render_template("edititem.html", item=editedItem)
+        return render_template("edititem.html",
+                               locations=locations,
+                               item=editedItem)
 
 
 @app.route('/items/<int:item_id>/delete', methods=['GET', 'POST'])
@@ -264,6 +267,7 @@ def deleteItem(item_id):
 
     """
 
+    locations = session.query(Location).order_by(asc(Location.name))
     deletedItem = session.query(Item).filter_by(id=item_id).one()
     user = session.query(User).filter_by(id=login_session['user_id']).one()
     if request.method == 'POST':
@@ -276,7 +280,9 @@ def deleteItem(item_id):
             flash('User not authorized to delete item')
             return redirect(url_for('showUserItems'))
     else:
-        return render_template('deleteitem.html', item=deletedItem)
+        return render_template('deleteitem.html',
+                               locations=locations,
+                               item=deletedItem)
 
 
 @app.route('/')

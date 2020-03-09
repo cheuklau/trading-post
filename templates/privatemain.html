@@ -1,27 +1,27 @@
 {% extends "main.html" %}
 {% block content %}
-  {% include "privateheader.html" %}
-  <div class="row">
-    <div class="column left__column">
-      <div class="dropdown">
-        <button class="dropbtn">Location</button>
-        <div class="dropdown-content">
-        {% for location in locations %}
-          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
-        {% endfor %}
-        </div>
+{% include "privateheader.html" %}
+<div class="row">
+  <div class="column left__column">
+    <div class="dropdown">
+      <button class="dropbtn">Location</button>
+      <div class="dropdown-content">
+      {% for location in locations %}
+        <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+      {% endfor %}
       </div>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
     </div>
-
-    <div class="column right__column">
-      <h2 align="center">Latest News</h2>
-      <p class="item">
-        This is a placeholder for Magic and site-related news.
-      </p>
-    </div>
+    <br><br><br>
+    <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+    <br><br><br>
+    <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
   </div>
+
+  <div class="column right__column">
+    <h2 align="center">Latest News</h2>
+    <p class="item">
+      This is a placeholder for Magic and site-related news.
+    </p>
+  </div>
+</div>
 {% endblock %}

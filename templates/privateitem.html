@@ -1,35 +1,35 @@
 {% extends "main.html" %}
 {% block content %}
-  {% include "privateheader.html" %}
-  <div class="row">
-    <div class="column left__column">
-      <div class="dropdown">
-        <button class="dropbtn">Location</button>
-        <div class="dropdown-content">
+{% include "privateheader.html" %}
+<div class="row">
+  <div class="column left__column">
+    <div class="dropdown">
+      <button class="dropbtn">Location</button>
+      <div class="dropdown-content">
         {% for location in locations %}
-          <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+        <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
         {% endfor %}
-        </div>
       </div>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
-      <br><br><br>
-      <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
     </div>
-
-    <div class="column right__column">
-      <h2 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}} - UID {{item.user_id}}</h2>
-      <br>
-      <form action="#" method="post">
-        <div class="form-group">
-          <label class="item", for="message">Message</label>
-          <textarea placeholder="Set up a time to meet, a counteroffer or propose a trade!" class="form-control" maxlength="250" rows="5" name="message"></textarea>
-          <br>
-          <br>
-          <button type="submit" class="btn-default" id="submit" type="submit">
-          <span class="glyphicon" aria-hidden="true"></span>Send</button>
-        </div>
-      </form>
-    </div>
+    <br><br><br>
+    <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+    <br><br><br>
+    <a href="{{url_for('showUserItems')}}"><button class="dropbtn-3">Messages</button></a>
   </div>
+
+  <div class="column right__column">
+    <h2 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}} - UID {{item.user_id}}</h2>
+    <br>
+    <form action="#" method="post">
+      <div class="form-group">
+        <label class="item", for="message">Message</label>
+        <textarea placeholder="Set up a time to meet, a counteroffer or propose a trade!" class="form-control" maxlength="250" rows="5" name="message"></textarea>
+        <br>
+        <br>
+        <button type="submit" class="btn-default" id="submit" type="submit">
+        <span class="glyphicon" aria-hidden="true"></span>Send</button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}
