@@ -18,15 +18,13 @@
   </div>
 
   <div class="column right__column">
-    <h2 align="center">Binder ({{items|length}} total)</h2>
-    {% for item in items %}
-      <h3 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}}
-      <a href="{{url_for('editItem', item_id=item.id)}}">Edit</a>
-      <a href="{{url_for('deleteItem', item_id=item.id)}}">Delete</a>
+    <h2 align="center">Messages ({{messages|length}} total)</h2>
+    {% for message in messages %}
+      <h3 class="item">Sender UID: {{message.sender_id}} - Item ID: {{message.item_id}}
+      <a href="{{url_for('replyMessage', message_id=message.id)}}">Reply</a>
+      <a href="{{url_for('deleteMessage', message_id=message.id)}}">Delete</a>
       </h3>
     {% endfor %}
-    <br>
-    <a align="right" href="{{url_for('addItem')}}"><button class="dropbtn-4">Add Item</button></a>
   </div>
 </div>
 {% endblock %}

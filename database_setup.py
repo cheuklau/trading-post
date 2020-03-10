@@ -16,15 +16,15 @@ class Location(Base):
             name: A string representing name of the location
     """
 
-    __tablename__ = 'location'
+    __tablename__ = "location"
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
 
     @property
     def serialize(self):
         return {
-            'id': self.id,
-            'name': self.name
+            "id": self.id,
+            "name": self.name
         }
 
 
@@ -38,9 +38,9 @@ class User(Base):
             location: A string representing location of the user
     """
 
-    __tablename__ = 'user'
+    __tablename__ = "user"
     id = Column(Integer, primary_key=True)
-    location_id = Column(Integer, ForeignKey('location.id'))
+    location_id = Column(Integer, ForeignKey("location.id"))
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     location = relationship(Location)
@@ -48,10 +48,10 @@ class User(Base):
     @property
     def serialize(self):
         return {
-            'id': self.id,
-            'location_id': self.location_id,
-            'name': self.name,
-            'email': self.email
+            "id": self.id,
+            "location_id": self.location_id,
+            "name": self.name,
+            "email": self.email
         }
 
 
@@ -69,9 +69,9 @@ class Item(Base):
             time_added: A datetime representing time card was added
     """
 
-    __tablename__ = 'item'
+    __tablename__ = "item"
     id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey("user.id"))
     name = Column(String(250), nullable=False)
     cardset = Column(String(250), nullable=False)
     condition = Column(String(250), nullable=False)
@@ -83,14 +83,14 @@ class Item(Base):
     @property
     def serialize(self):
         return {
-            'id': self.id,
-            'user_id': self.user_id,
-            'name': self.name,
-            'cardset': self.cardset,
-            'condition': self.condition,
-            'price': self.price,
-            'quantity': self.quantity,
-            'time_added': self.time_added
+            "id": self.id,
+            "user_id": self.user_id,
+            "name": self.name,
+            "cardset": self.cardset,
+            "condition": self.condition,
+            "price": self.price,
+            "quantity": self.quantity,
+            "time_added": self.time_added
         }
 
 
@@ -105,11 +105,11 @@ class Message(Base):
             message: A string representing the message
     """
 
-    __tablename__ = 'message'
+    __tablename__ = "message"
     id = Column(Integer, primary_key=True)
-    sender_id = Column(Integer, ForeignKey('user.id'))
-    receiver_id = Column(Integer, ForeignKey('user.id'))
-    item_id = Column(Integer, ForeignKey('item.id'))
+    sender_id = Column(Integer, ForeignKey("user.id"))
+    receiver_id = Column(Integer, ForeignKey("user.id"))
+    item_id = Column(Integer, ForeignKey("item.id"))
     message = Column(String(250), nullable=False)
     sender = relationship("User", foreign_keys=[sender_id])
     receiver = relationship("User", foreign_keys=[receiver_id])
@@ -118,13 +118,13 @@ class Message(Base):
     @property
     def serialize(self):
         return {
-            'id': self.id,
-            'sender_id': self.sender_id,
-            'receiver_id': self.receiver_id,
-            'item_id': self.item_id,
-            'message': self.message
+            "id": self.id,
+            "sender_id": self.sender_id,
+            "receiver_id": self.receiver_id,
+            "item_id": self.item_id,
+            "message": self.message
         }
 
 # Final configuration code
-engine = create_engine('sqlite:///catalog.db')
+engine = create_engine("sqlite:///catalog.db")
 Base.metadata.create_all(engine)

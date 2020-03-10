@@ -1,0 +1,37 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "privateheader.html" %}
+<div class="row">
+	<div class="column left__column">
+	<div class="dropdown">
+		<button class="dropbtn">Location</button>
+		<div class="dropdown-content">
+		{% for location in locations %}
+		<a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+		{% endfor %}
+		</div>
+	</div>
+	<br><br><br>
+	<a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+	<br><br><br>
+	<a href="{{url_for('showUserMessages')}}"><button class="dropbtn-3">Messages</button></a>
+	</div>
+
+	<div class="column right__column">
+		<h3 class="item">Sender UID: {{message.sender_id}}</h3>
+		<h3 class="item">Item ID: {{message.item_id}}</h3>
+		<h3 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}}</h3>
+		<h3 class="item">Message: {{message.message}}</h3>
+		<form action="#" method="post">
+			<div class="form-group">
+				<label class="item" for="message">Response</label>
+				<input type="text" class="form-control" maxlength="50" name="message">
+				<br>
+				<br>
+				<button type="submit" class="btn-default" id="submit">
+				<span class="glyphicon" aria-hidden="true"></span>Reply</button>
+			</div>
+		</form>
+	</div>
+</div>
+{% endblock %}
