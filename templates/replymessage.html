@@ -19,9 +19,10 @@
 
 	<div class="column right__column">
 		<h3 class="item">Sender UID: {{message.sender_id}}</h3>
-		<h3 class="item">Item ID: {{message.item_id}}</h3>
 		<h3 class="item">{{item.quantity}}x {{item.name}} ({{item.condition}}, {{item.cardset}}) - ${{item.price}}</h3>
-		<h3 class="item">Message: {{message.message}}</h3>
+		<h3 class="item">Message:</h3>
+		<h3 class="item">{{message.message}}</h3>
+		<br>
 		<form action="#" method="post">
 			<div class="form-group">
 				<label class="item" for="message">Response</label>

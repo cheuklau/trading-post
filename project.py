@@ -224,7 +224,7 @@ def showUserMessages():
     """
 
     locations = session.query(Location).order_by(asc(Location.name))
-    messages = session.query(Message).filter_by(receiver_id=login_session["user_id"]).all()
+    messages = session.query(Message).filter_by(receiver_id=login_session["user_id"]).join(Item).all()
     return render_template('usermessages.html',
                             user_id=login_session['user_id'],
                             messages=messages,
@@ -242,10 +242,10 @@ def replyMessage(message_id):
     user = session.query(User).filter_by(id=login_session['user_id']).one()
     item = session.query(Item).filter_by(id=message.item_id).one()
     if request.method == "POST":
-        if user.id == replyMessage.receiver_id:
+        if user.id == message.receiver_id:
             newMessage = Message(sender_id=login_session["user_id"],
-                                 receiver_id=replyMessage.sender_id,
-                                 item_id=replyMessage.item_id,
+                                 receiver_id=message.sender_id,
+                                 item_id=message.item_id,
                                  message=request.form["message"])
             session.add(newMessage)
             session.commit()
