@@ -126,5 +126,5 @@ class Message(Base):
         }
 
 # Final configuration code
-engine = create_engine("sqlite:///catalog.db")
+engine = create_engine('sqlite:///catalog.db')
 Base.metadata.create_all(engine)
