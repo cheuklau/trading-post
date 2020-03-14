@@ -54,7 +54,6 @@ def gconnect():
     params = {'access_token': access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
     data = answer.json()
-    login_session['username'] = data['name']
     login_session['email'] = data['email']
     # See if user exists, if not then make a new one
     user_id = getUserID(login_session['email'])
@@ -64,9 +63,9 @@ def gconnect():
     # Create personalized response
     output = ''
     output += '<h1>Welcome, '
-    output += login_session['username']
+    output += login_session['email']
     output += '!</h1>'
-    flash("You are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as %s" % login_session['email'])
     return output
 
 
@@ -89,7 +88,6 @@ def gdisconnect():
     output = ''
     # Delete login session
     del login_session['access_token']
-    del login_session['username']
     del login_session['email']
     if result['status'] == '200':
         output += '<h1> Successfully disconnected </h1>'
@@ -144,7 +142,7 @@ def showItems(location_id):
     locations = session.query(Location).order_by(asc(Location.name))
     location = session.query(Location).filter_by(id=location_id).one()
     items = session.query(Item).join(User).filter(User.location_id==location_id).all()
-    if 'username' not in login_session:
+    if 'email' not in login_session:
         return render_template('publicitems.html',
                                locations=locations,
                                location=location,
@@ -261,7 +259,7 @@ def replyMessage(message_id):
                                item=item)
 
 
-@app.route('/items/<int:message_id>/delete', methods=['GET', 'POST'])
+@app.route('/messages/<int:message_id>/delete', methods=['GET', 'POST'])
 def deleteMessage(message_id):
     """ Delete selected message
 
@@ -292,7 +290,7 @@ def addItem():
     """
 
     # Check if user is logged in
-    if 'username' not in login_session:
+    if 'email' not in login_session:
         return redirect('/login')
 
     if request.method == 'POST':
@@ -371,7 +369,7 @@ def showMain():
 
     locations = session.query(Location).order_by(asc(Location.name))
     items = session.query(Item).order_by(desc(Item.time_added)).limit(5)
-    if 'username' not in login_session:
+    if 'email' not in login_session:
         return render_template('publicmain.html',
                                locations=locations,
                                items=items)
@@ -387,7 +385,7 @@ def createUser(login_session):
         Add user to database, return user id.
     """
 
-    newUser = User(name=login_session['username'],
+    newUser = User(name="reserved",
                    email=login_session['email'])
     session.add(newUser)
     session.commit()
