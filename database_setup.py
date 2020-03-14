@@ -33,7 +33,6 @@ class User(Base):
 
         Attributes:
             id: An integer acting as the primary key
-            name: A string representing name of the user
             email: A string represeting email of the user
             location: A string representing location of the user
     """
@@ -41,7 +40,6 @@ class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True)
     location_id = Column(Integer, ForeignKey("location.id"))
-    name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     location = relationship(Location)
 
@@ -50,7 +48,6 @@ class User(Base):
         return {
             "id": self.id,
             "location_id": self.location_id,
-            "name": self.name,
             "email": self.email
         }
 

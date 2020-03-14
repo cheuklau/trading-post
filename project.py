@@ -385,8 +385,7 @@ def createUser(login_session):
         Add user to database, return user id.
     """
 
-    newUser = User(name="reserved",
-                   email=login_session['email'])
+    newUser = User(email=login_session['email'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
