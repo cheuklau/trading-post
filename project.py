@@ -54,7 +54,6 @@ def gconnect():
     params = {'access_token': access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
     data = answer.json()
-    login_session['username'] = data['name']
     login_session['email'] = data['email']
     # See if user exists, if not then make a new one
     user_id = getUserID(login_session['email'])
@@ -64,9 +63,9 @@ def gconnect():
     # Create personalized response
     output = ''
     output += '<h1>Welcome, '
-    output += login_session['username']
+    output += login_session['email']
     output += '!</h1>'
-    flash("You are now logged in as %s" % login_session['username'])
+    flash("You are now logged in as %s" % login_session['email'])
     return output
 
 
@@ -89,7 +88,6 @@ def gdisconnect():
     output = ''
     # Delete login session
     del login_session['access_token']
-    del login_session['username']
     del login_session['email']
     if result['status'] == '200':
         output += '<h1> Successfully disconnected </h1>'
@@ -144,7 +142,7 @@ def showItems(location_id):
     locations = session.query(Location).order_by(asc(Location.name))
     location = session.query(Location).filter_by(id=location_id).one()
     items = session.query(Item).join(User).filter(User.location_id==location_id).all()
-    if 'username' not in login_session:
+    if 'email' not in login_session:
         return render_template('publicitems.html',
                                locations=locations,
                                location=location,
@@ -154,7 +152,6 @@ def showItems(location_id):
         user = session.query(User).filter_by(id=login_session['user_id']).one()
         user.location_id = location_id
         location = session.query(Location).filter_by(id=location_id).one()
-        #flash('Your location has been set to %s' % location.name)
         return render_template('privateitems.html',
                                user_id=login_session['user_id'],
                                locations=locations,
@@ -162,7 +159,7 @@ def showItems(location_id):
                                items=items)
 
 
-@app.route('/items/<int:item_id>')
+@app.route('/items/<int:item_id>', methods=['GET', 'POST'])
 def showItem(item_id):
     """ Show individual item description
 
@@ -171,10 +168,21 @@ def showItem(item_id):
 
     locations = session.query(Location).order_by(asc(Location.name))
     item = session.query(Item).filter_by(id=item_id).one()
-    return render_template('privateitem.html',
-                            user_id=login_session['user_id'],
-                            locations=locations,
-                            item=item)
+    user = session.query(User).filter_by(id=login_session["user_id"]).one()
+    if request.method == "POST":
+        newMessage = Message(sender_id=login_session["user_id"],
+                             receiver_id=item.user_id,
+                             item_id=item_id,
+                             message=request.form["message"])
+        session.add(newMessage)
+        session.commit()
+        flash("Message sent")
+        return redirect(url_for("showItems", location_id=user.location_id))
+    else:
+        return render_template('privateitem.html',
+                                user_id=login_session['user_id'],
+                                locations=locations,
+                                item=item)
 
 
 @app.route('/user/items/')
@@ -206,6 +214,75 @@ def showUserItem(item_id):
                             item=item)
 
 
+@app.route('/user/messages')
+def showUserMessages():
+    """ Show user messages
+
+
+    """
+
+    locations = session.query(Location).order_by(asc(Location.name))
+    messages = session.query(Message).filter_by(receiver_id=login_session["user_id"]).join(Item).all()
+    return render_template('usermessages.html',
+                            user_id=login_session['user_id'],
+                            messages=messages,
+                            locations=locations)
+
+
+@app.route('/messages/<int:message_id>/reply', methods=['GET', 'POST'])
+def replyMessage(message_id):
+    """ Reply to a message
+
+    """
+
+    locations = session.query(Location).order_by(asc(Location.name))
+    message = session.query(Message).filter_by(id=message_id).one()
+    user = session.query(User).filter_by(id=login_session['user_id']).one()
+    item = session.query(Item).filter_by(id=message.item_id).one()
+    if request.method == "POST":
+        if user.id == message.receiver_id:
+            newMessage = Message(sender_id=login_session["user_id"],
+                                 receiver_id=message.sender_id,
+                                 item_id=message.item_id,
+                                 message=request.form["message"])
+            session.add(newMessage)
+            session.commit()
+            flash("Reply sent")
+            return redirect(url_for("showUserMessages"))
+        else:
+            flash("User not authorized")
+            return redirect(url_for("showUserMessages"))
+    else:
+        return render_template("replymessage.html",
+                               locations=locations,
+                               message=message,
+                               item=item)
+
+
+@app.route('/messages/<int:message_id>/delete', methods=['GET', 'POST'])
+def deleteMessage(message_id):
+    """ Delete selected message
+
+    """
+
+    locations = session.query(Location).order_by(asc(Location.name))
+    message = session.query(Message).filter_by(id=message_id).one()
+    user = session.query(User).filter_by(id=login_session['user_id']).one()
+    if request.method == 'POST':
+        if user.id == message.receiver_id:
+            session.delete(message)
+            session.commit()
+            flash('Message deleted')
+            return redirect(url_for('showUserMessages'))
+        else:
+            flash('User not authorized')
+            return redirect(url_for('showUserMessages'))
+    else:
+        return render_template('deletemessage.html',
+                               locations=locations,
+                               message=message)
+
+
 @app.route('/additem', methods=['GET', 'POST'])
 def addItem():
     """ Add item to database.
@@ -213,10 +290,9 @@ def addItem():
     """
 
     # Check if user is logged in
-    if 'username' not in login_session:
+    if 'email' not in login_session:
         return redirect('/login')
 
-    print "here"
     if request.method == 'POST':
         newItem = Item(name=request.form['name'],
                        cardset=request.form['cardset'],
@@ -226,7 +302,7 @@ def addItem():
                        user_id=login_session['user_id'])
         session.add(newItem)
         session.commit()
-        flash('Item successfully added')
+        flash('Item added')
         return redirect(url_for('showUserItems'))
     else:
         return render_template('newitem.html')
@@ -250,10 +326,10 @@ def editItem(item_id):
             editedItem.price = request.form["price"]
             session.add(editedItem)
             session.commit()
-            flash("Item successfully edited")
+            flash("Item changed")
             return redirect(url_for("showUserItems"))
         else:
-            flash("User not authorized to edit item")
+            flash("User not authorized")
             return redirect(url_for("showUserItems"))
     else:
         return render_template("edititem.html",
@@ -274,10 +350,10 @@ def deleteItem(item_id):
         if user.id == deletedItem.user_id:
             session.delete(deletedItem)
             session.commit()
-            flash('Item successfully deleted')
+            flash('Item deleted')
             return redirect(url_for('showUserItems'))
         else:
-            flash('User not authorized to delete item')
+            flash('User not authorized')
             return redirect(url_for('showUserItems'))
     else:
         return render_template('deleteitem.html',
@@ -293,7 +369,7 @@ def showMain():
 
     locations = session.query(Location).order_by(asc(Location.name))
     items = session.query(Item).order_by(desc(Item.time_added)).limit(5)
-    if 'username' not in login_session:
+    if 'email' not in login_session:
         return render_template('publicmain.html',
                                locations=locations,
                                items=items)
@@ -309,8 +385,7 @@ def createUser(login_session):
         Add user to database, return user id.
     """
 
-    newUser = User(name=login_session['username'],
-                   email=login_session['email'])
+    newUser = User(email=login_session['email'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()

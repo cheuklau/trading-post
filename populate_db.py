@@ -20,9 +20,9 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Add users to database
-session.add(User(name="John Smith", email="john_smith@email.com", location_id=1))
-session.add(User(name="Jane Doe", email="jane_doe@email.com", location_id=1))
-session.add(User(name="Jack Daniels", email="jack_daniels@email.com", location_id=2))
+session.add(User(email="john_smith@email.com", location_id=1))
+session.add(User(email="jane_doe@email.com", location_id=1))
+session.add(User(email="jack_daniels@email.com", location_id=2))
 
 # Add locations to database
 session.add(Location(name="GP Vegas"))
