@@ -1,0 +1,14 @@
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build
+
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:2.7.14
+    steps:
+      - checkout
+      - run: sudo pip install -r requirements.txt
