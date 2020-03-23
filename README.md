@@ -1,3 +1,5 @@
+[![cheuklau](https://circleci.com/gh/cheuklau/trading-post.svg?style=svg)](https://circleci.com/gh/cheuklau/trading-post)
+
 # Trading Post
 
 Trading post is a simple platform to help people in the same location find each other and make trades.
