@@ -1,14 +1,18 @@
-# Bind code to the SQLAlchemy engine
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Float, Numeric
+"""
+Set up postgres database
+"""
+
+import datetime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Numeric
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
-import datetime
 
 # Create base class for classes to inherit SQLAlchemy properties
-Base = declarative_base()
+BASE = declarative_base()
 
-class Location(Base):
+
+class Location(BASE): # pylint: disable=too-few-public-methods
     """ Create location table
 
         Attributes:
@@ -22,13 +26,15 @@ class Location(Base):
 
     @property
     def serialize(self):
+        """ Serialize JSON object """
+
         return {
             "id": self.id,
             "name": self.name
         }
 
 
-class User(Base):
+class User(BASE): # pylint: disable=too-few-public-methods
     """ User table
 
         Attributes:
@@ -45,6 +51,8 @@ class User(Base):
 
     @property
     def serialize(self):
+        """ Serialize json object """
+
         return {
             "id": self.id,
             "location_id": self.location_id,
@@ -52,7 +60,7 @@ class User(Base):
         }
 
 
-class Item(Base):
+class Item(BASE): # pylint: disable=too-few-public-methods
     """ Create item table
 
         Attributes:
@@ -72,13 +80,15 @@ class Item(Base):
     name = Column(String(250), nullable=False)
     cardset = Column(String(250), nullable=False)
     condition = Column(String(250), nullable=False)
-    price = Column(Numeric(10,2), nullable=False)
+    price = Column(Numeric(10, 2), nullable=False)
     quantity = Column(Integer, nullable=False)
     time_added = Column(DateTime, default=datetime.datetime.utcnow())
     user = relationship(User)
 
     @property
     def serialize(self):
+        """ Serialize json object """
+
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -91,7 +101,7 @@ class Item(Base):
         }
 
 
-class Message(Base):
+class Message(BASE): # pylint: disable=too-few-public-methods
     """ Create message table
 
         Attributes:
@@ -114,6 +124,8 @@ class Message(Base):
 
     @property
     def serialize(self):
+        """ Serialize json object """
+
         return {
             "id": self.id,
             "sender_id": self.sender_id,
@@ -123,5 +135,5 @@ class Message(Base):
         }
 
 # Final configuration code
-engine = create_engine('sqlite:///catalog.db')
-Base.metadata.create_all(engine)
+ENGINE = create_engine('sqlite:///catalog.db')
+BASE.metadata.create_all(ENGINE)
