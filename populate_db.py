@@ -7,13 +7,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Import empty database we created in database_setup.py
-from database_setup import Base, User, Location, Item, Message
+from database_setup import BASE, User, Location, Item, Message
 
 # Let our program know which database engine we want to communicate with
 ENGINE = create_engine('sqlite:///catalog.db')
 
 # Bind engine to Base class so declaratives can be accessed through DBSession
-Base.metadata.bind = ENGINE
+BASE.metadata.bind = ENGINE
 
 # Sessionmaker establishes communication between code and engine
 DBSESSION = sessionmaker(bind=ENGINE)
