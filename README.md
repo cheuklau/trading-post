@@ -21,3 +21,7 @@ Follow the following steps to test locally:
 - Visit `http://0.0.0.0.xip.io:5000/` from your browser
 
 Note that [xip](xip.io) is a domain name that provides wildcard DNS for any IP. This allows testing on the local network.
+
+## CircleCI Integration
+
+This project is set up with CircleCI. Contributions will automatically be picked up by CircleCI and built into an AMI using Packer based on the operations [repo](https://github.com/cheuklau/trading-post-ops). The AWS secret and access keys required for Packer to build the AMI are stored in CircleCI as a secret environment variable.
