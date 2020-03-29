@@ -7,14 +7,14 @@
       <button class="dropbtn">Location</button>
       <div class="dropdown-content">
         {% for location in locations %}
-        <a href = "{{url_for('showItems', location_id=location.id)}}">{{location.name}}</a>
+        <a href = "{{url_for('show_items', location_id=location.id)}}">{{location.name}}</a>
         {% endfor %}
       </div>
     </div>
     <br><br><br>
-    <a href="{{url_for('showUserItems')}}"><button class="dropbtn-2">Binder</button></a>
+    <a href="{{url_for('show_user_items')}}"><button class="dropbtn-2">Binder</button></a>
     <br><br><br>
-    <a href="{{url_for('showUserMessages')}}"><button class="dropbtn-3">Messages</button></a>
+    <a href="{{url_for('show_user_messages')}}"><button class="dropbtn-3">Messages</button></a>
   </div>
 
   <div class="column right__column">
