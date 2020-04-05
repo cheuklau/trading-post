@@ -402,7 +402,7 @@ def get_user_id(email):
     try:
         user = SESSION.query(User).filter_by(email=email).one()
         return user.id
-    except RuntimeError:
+    except Exception: # pylint: disable=broad-except
         return None
 
 
